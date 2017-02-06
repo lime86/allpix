@@ -53,11 +53,11 @@ ReadGeoDescription::ReadGeoDescription(string xmlFile){
 	// apply requested replicas
 	ReplicateDetectors();
 
-	cout << "Summary: read "<< (int)m_detsGeo.size() << " detectors from xml database " << endl;
-	map<int, AllPixGeoDsc *>::iterator itr = m_detsGeo.begin();
-	for( ; itr != m_detsGeo.end() ; itr++){
-		(*itr).second->Dump();
-	}
+	//cout << "Summary: read "<< (int)m_detsGeo.size() << " detectors from xml database " << endl;
+	//map<int, AllPixGeoDsc *>::iterator itr = m_detsGeo.begin();
+	//for( ; itr != m_detsGeo.end() ; itr++){
+	//	(*itr).second->Dump();
+	//}
 
 	// keep this pointer
 	g_GeoDsc = this;
@@ -114,7 +114,7 @@ G4int ReadGeoDescription::UseTheseDetectorsOnly(vector<G4int> useDetectors){
 
 
 		if(!found){
-			G4cout << " ----> schedule for erasing " << aDet << G4endl;
+			// G4cout << " ----> schedule for erasing " << aDet << G4endl;
 			// don't erase right away, schedule and delete later, otherwise the
 			// vector over which I am looping shrinks.
 			scheduledErase.push_back(aDet);
@@ -204,7 +204,7 @@ void ReadGeoDescription::ParseContext(TXMLNode *node)
 							m_detsGeo[m_firstIndx] = new AllPixGeoDsc;
 							m_detsGeo[m_firstIndx]->SetID(atoi(tempAtt1.c_str()));
 
-							cout << "Creating configuration for device with id : " << m_firstIndx << endl; // display the id
+							//cout << "Creating configuration for device with id : " << m_firstIndx << endl; // display the id
 							//cout << m_detsGeoIndx[m_firstIndx].size() << " copies requested" << endl;
 
 						}
@@ -321,7 +321,17 @@ void ReadGeoDescription::ParseContext(TXMLNode *node)
 					float val = atof(tempContent.c_str());
 					m_detsGeo[m_firstIndx]->SetSensorHZ(val*m_unitsMap[m_currentAtt]);
 
-				}else if(m_currentNodeName == __sensor_posx_S){
+                }else if(m_currentNodeName == __coverlayer_hz_S){
+
+                    float val = atof(tempContent.c_str());
+                    m_detsGeo[m_firstIndx]->SetCoverlayerHZ(val*m_unitsMap[m_currentAtt]);
+
+                }else if(m_currentNodeName == __coverlayer_mat_S){
+
+                    G4String valS(tempContent);
+                    m_detsGeo[m_firstIndx]->SetCoverlayerMat(valS);
+
+                }else if(m_currentNodeName == __sensor_posx_S){
 
 					float val = atof(tempContent.c_str());
 					m_detsGeo[m_firstIndx]->SetSensorPosX(val*m_unitsMap[m_currentAtt]);
@@ -546,7 +556,7 @@ void ReadGeoDescription::ReplicateDetectors(){
 		for(repItr = replicas.begin() ; repItr != replicas.end() ; repItr++){
 			m_detsGeo[*repItr] = new AllPixGeoDsc;
 			*(m_detsGeo[*repItr]) = *(m_detsGeo[(*itr).first]); // ! a copy of object contents !
-			cout << "  --> Creating configuration replica with Id : " << *repItr << " (copy of " << (*itr).first << ")" << endl;
+			//cout << "  --> Creating configuration replica with Id : " << *repItr << " (copy of " << (*itr).first << ")" << endl;
 			m_detsGeo[*repItr]->SetID(*repItr);
 		}
 
