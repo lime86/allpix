@@ -70,7 +70,7 @@ AllPixTimepixDigitizer::AllPixTimepixDigitizer(G4String modName, G4String hitsCo
 	// Bias and Temperature //
 	//////////////////////////
 
-	biasVoltage=80.0; //[V]
+	biasVoltage=200.0; //[V]
 	Temperature = 300.0;
 	detectorThickness = gD->GetSensorZ();
 	resistivity=gD->GetResistivity();
@@ -172,8 +172,8 @@ AllPixTimepixDigitizer::AllPixTimepixDigitizer(G4String modName, G4String hitsCo
 	electricFieldY = 0; // V/um
 
 	//G4cout << "!!!!!!!Radiation Damage Report !!!!!!!!" << endl
-	//	 << TString::Format("depletionVoltage : %f depleted Depth : %f",depletionVoltage,depletedDepth/um) << endl
-	//	 << TString::Format("Neff : %e Neff0 : %e ",Neff*cm3,Neff0*cm3);
+//		 << TString::Format("depletionVoltage : %f depleted Depth : %f",depletionVoltage,depletedDepth/um) << endl
+//		 << TString::Format("Neff : %e Neff0 : %e ",Neff*cm3,Neff0*cm3);
 	//if(bulkType==false && Neff<0) cout << "Bulk inverted" << endl;
 
 
@@ -615,6 +615,7 @@ void AllPixTimepixDigitizer::Efield1D(G4double z){
 	if(readoutType==ELECTRON)
 	{
 		electricFieldZ=(biasVoltage-depletionVoltage)/detectorThickness+(1-z/detectorThickness)*2*depletionVoltage/detectorThickness;
+		
 		//electricFieldZ=(detectorThickness-z)*biasVoltage/depletedDepth;
 	}
 	else {
@@ -626,6 +627,8 @@ void AllPixTimepixDigitizer::Efield1D(G4double z){
 		electricFieldZ=0;
 		//cout << "bip" << endl;
 	}
+
+	//G4cout << electricFieldZ<< endl;
 
 }
 
